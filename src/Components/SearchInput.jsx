@@ -13,6 +13,7 @@ const SearchInput = () => {
   const [color, setColor] = useState("")
   const [myVehicleData, setMyVehicleData] = useState([])
   const [token, setToken] = useState("")
+  const [selectedVehicle, setSelectedVehicle] = useState(null)
   const url = `https://api.manheim.com/valuations/vin/${vin}?grade=${cr *
     10}&odometer=${mileage}&country=US&color=${color}&region=${region}`
 
@@ -28,11 +29,11 @@ const SearchInput = () => {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     })
-    setMyVehicleData(res.data.items)
+    setMyVehicleData(res.data)
   }
 
   useEffect(() => {
-    token && getData()
+    token && handleSubmit()
     // eslint-disable-next-line
   }, [])
   return (
@@ -139,7 +140,21 @@ const SearchInput = () => {
           <div></div>
         </div>
         <div className='col'>
-          <h4 className='mb-5'>Result:</h4>
+          <h4 className='mb-5'>Result: {myVehicleData.count}</h4>
+          {myVehicleData.items && myVehicleData.items.length > 0
+            ? myVehicleData.items.map(item => (
+                <button
+                  key={item.trim}
+                  type='button'
+                  className='btn btn-outline-secondary m-1'
+                  onClick={vehicle => setSelectedVehicle(vehicle)}
+                >
+                  {item.description.trim}
+                </button>
+              ))
+            : null}
+          {/* <h4 className='mb-5'>Result: {myVehicleData.items}</h4> */}
+
           <ul className='bg-dark list-group list-group-flush  mx-5 mt-3 px-3'>
             {/* {Object.keys(myVehicleData[0]).map(key => (
               <li className='bg-dark list-group-item'>{key}</li>
